@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Certified AI Ops Practitioner — Certification Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root {
+    --bg:#eef2f7; --bg2:#ffffff; --bg3:#f0f4f9; --border:#d0dae8;
+    --text:#1a2332; --text-dim:#4a5568; --text-dimmer:#8fa3bc;
+    --blue:#1a6eb5; --blue-light:#e8f1fb; --blue-mid:#b8d0ed; --blue-dark:#0f4a7a;
+    --teal:#0e7a6b; --teal-light:#e6f4f2;
+    --coral:#c0392b; --coral-light:#fdf0ee; --coral-mid:#f0b8b2;
+    --green:#1a6b3a; --green-light:#e8f5ed; --green-mid:#a3d4b8;
+    --amber:#92600a; --amber-light:#fdf3e3;
+    --purple:#5b4fcf; --purple-light:#f0effe;
+    --radius:12px;
+  }
+
+  html,body { min-height:100%; background:var(--bg); color:var(--text); font-family:'Merriweather Sans',sans-serif; font-size:15px; line-height:1.6; }
+
+  /* ── Top nav ── */
+  .topnav { background:var(--bg2); border-bottom:1px solid var(--border); padding:0 40px; height:52px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-dimmer); font-family:'Source Code Pro',monospace; }
+  .topnav a { color:var(--blue); text-decoration:none; }
+  .topnav a:hover { text-decoration:underline; }
+  .topnav .sep { margin:0 4px; }
+
+  /* ── Hero ── */
+  .hero { background:var(--bg2); border-bottom:2px solid var(--border); padding:40px 40px 32px; }
+  .hero-inner { max-width:760px; margin:0 auto; }
+  .hero-eyebrow { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--blue); font-weight:600; margin-bottom:10px; font-family:'Source Code Pro',monospace; }
+  .hero h1 { font-size:clamp(20px,3vw,30px); font-weight:700; color:var(--text); line-height:1.2; }
+  .hero h1 span { color:var(--blue); }
+  .hero-sub { margin-top:12px; font-size:14.5px; color:var(--text-dim); line-height:1.7; }
+  .hero-meta { margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; }
+  .meta-pill { font-size:10.5px; font-family:'Source Code Pro',monospace; padding:3px 10px; border-radius:20px; font-weight:600; }
+  .pill-blue   { background:var(--blue-light); color:var(--blue); border:1px solid var(--blue-mid); }
+  .pill-grey   { background:var(--bg3); color:var(--text-dim); border:1px solid var(--border); font-weight:400; }
+  .pill-green  { background:var(--green-light); color:var(--green); border:1px solid var(--green-mid); }
+
+  /* ── Progress bar ── */
+  .progress-bar-wrap { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 40px; position:sticky; top:0; z-index:100; }
+  .progress-inner { max-width:760px; margin:0 auto; display:flex; align-items:center; gap:12px; }
+  .progress-label { font-size:11px; font-family:'Source Code Pro',monospace; color:var(--text-dimmer); white-space:nowrap; }
+  .progress-track { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+  .progress-fill  { height:100%; background:var(--blue); border-radius:3px; transition:width .3s ease; }
+  .progress-count { font-size:11px; font-family:'Source Code Pro',monospace; color:var(--text-dimmer); white-space:nowrap; }
+
+  /* ── Main ── */
+  .main { max-width:760px; margin:0 auto; padding:40px 40px 80px; }
+
+  /* ── Section header ── */
+  .section-header { display:flex; align-items:center; gap:12px; margin:40px 0 20px; padding-bottom:14px; border-bottom:2px solid var(--border); }
+  .section-header:first-child { margin-top:0; }
+  .section-icon { width:36px; height:36px; border-radius:8px; background:var(--blue-light); border:1px solid var(--blue-mid); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .section-title { font-size:15px; font-weight:700; color:var(--text); }
+  .section-sub { font-size:11px; font-family:'Source Code Pro',monospace; color:var(--text-dimmer); margin-top:2px; }
+
+  /* ── Question card ── */
+  .q-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:14px; transition:border-color .15s; }
+  .q-card.answered { border-left:3px solid var(--blue); }
+  .q-card.correct  { border-left:3px solid var(--green); }
+  .q-card.wrong    { border-left:3px solid var(--coral); }
+
+  .q-num { font-size:9px; font-family:'Source Code Pro',monospace; letter-spacing:.15em; text-transform:uppercase; color:var(--text-dimmer); font-weight:600; margin-bottom:8px; }
+  .q-text { font-size:14px; color:var(--text); line-height:1.7; margin-bottom:14px; font-weight:500; }
+
+  /* MCQ options */
+  .options { display:flex; flex-direction:column; gap:8px; }
+  .option { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border:1px solid var(--border); border-radius:8px; cursor:pointer; transition:background .12s, border-color .12s; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
+  .option:hover { background:var(--bg3); border-color:var(--blue-mid); }
+  .option.selected { background:var(--blue-light); border-color:var(--blue); color:var(--text); }
+  .option.correct-ans { background:var(--green-light); border-color:var(--green-mid); color:var(--green); }
+  .option.wrong-ans   { background:var(--coral-light); border-color:var(--coral-mid); color:var(--coral); }
+  .option-key { font-family:'Source Code Pro',monospace; font-size:11px; font-weight:700; color:var(--text-dimmer); flex-shrink:0; margin-top:1px; }
+  .option.selected .option-key { color:var(--blue); }
+  .option.correct-ans .option-key { color:var(--green); }
+  .option.wrong-ans   .option-key { color:var(--coral); }
+
+  /* True/False */
+  .tf-options { display:flex; gap:10px; }
+  .tf-btn { flex:1; padding:10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; text-align:center; font-size:13.5px; font-weight:600; font-family:'Source Code Pro',monospace; color:var(--text-dim); transition:background .12s, border-color .12s; }
+  .tf-btn:hover { background:var(--bg3); border-color:var(--blue-mid); }
+  .tf-btn.selected { background:var(--blue-light); border-color:var(--blue); color:var(--blue); }
+  .tf-btn.correct-ans { background:var(--green-light); border-color:var(--green-mid); color:var(--green); }
+  .tf-btn.wrong-ans   { background:var(--coral-light); border-color:var(--coral-mid); color:var(--coral); }
+
+  /* Explanation */
+  .explanation { margin-top:12px; padding:12px 14px; background:var(--bg3); border-radius:8px; font-size:13px; color:var(--text-dim); line-height:1.7; display:none; }
+  .explanation.visible { display:block; }
+  .explanation .exp-label { font-size:9px; font-family:'Source Code Pro',monospace; letter-spacing:.15em; text-transform:uppercase; font-weight:700; margin-bottom:4px; }
+  .explanation.correct-exp .exp-label { color:var(--green); }
+  .explanation.wrong-exp .exp-label { color:var(--coral); }
+
+  /* ── Submit bar ── */
+  .submit-bar { position:sticky; bottom:0; background:var(--bg2); border-top:1px solid var(--border); padding:16px 40px; }
+  .submit-inner { max-width:760px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .submit-status { font-size:13px; color:var(--text-dimmer); font-family:'Source Code Pro',monospace; }
+  .submit-btn { padding:12px 28px; background:var(--blue); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; font-family:'Merriweather Sans',sans-serif; cursor:pointer; transition:background .15s; }
+  .submit-btn:hover { background:var(--blue-dark); }
+  .submit-btn:disabled { background:var(--border); color:var(--text-dimmer); cursor:not-allowed; }
+  .reset-btn { padding:10px 18px; background:var(--bg3); color:var(--text-dim); border:1px solid var(--border); border-radius:8px; font-size:13px; font-weight:600; font-family:'Merriweather Sans',sans-serif; cursor:pointer; transition:background .15s; display:none; }
+  .reset-btn:hover { background:var(--border); }
+
+  /* ── Results panel ── */
+  .results { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:32px; margin-bottom:32px; text-align:center; display:none; }
+  .results.visible { display:block; }
+  .results-badge { width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 16px; }
+  .results-badge.pass { background:var(--green-light); border:2px solid var(--green-mid); }
+  .results-badge.fail { background:var(--coral-light); border:2px solid var(--coral-mid); }
+  .results-title { font-size:22px; font-weight:700; margin-bottom:6px; }
+  .results-title.pass { color:var(--green); }
+  .results-title.fail { color:var(--coral); }
+  .results-score { font-size:15px; color:var(--text-dim); margin-bottom:16px; }
+  .results-score strong { color:var(--text); font-size:20px; }
+  .results-breakdown { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .result-stat { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px 20px; text-align:center; }
+  .result-stat-num { font-size:22px; font-weight:700; font-family:'Source Code Pro',monospace; }
+  .result-stat-num.correct { color:var(--green); }
+  .result-stat-num.wrong   { color:var(--coral); }
+  .result-stat-num.skipped { color:var(--amber); }
+  .result-stat-label { font-size:11px; font-family:'Source Code Pro',monospace; color:var(--text-dimmer); text-transform:uppercase; letter-spacing:.1em; margin-top:2px; }
+
+  /* ── Saved banner ── */
+  .saved-banner { background:var(--blue-light); border:1px solid var(--blue-mid); border-radius:8px; padding:12px 16px; margin-bottom:24px; font-size:13px; color:var(--blue-dark); display:none; }
+  .saved-banner.visible { display:flex; align-items:center; gap:8px; }
+
+  .divider { height:1px; background:var(--border); margin:32px 0; }
+
+  footer { background:var(--bg2); border-top:1px solid var(--border); padding:14px 40px; font-size:11px; font-family:'Source Code Pro',monospace; color:var(--text-dimmer); display:flex; justify-content:space-between; }
+
+  @media(max-width:640px) { .topnav,.main,.submit-bar,.progress-bar-wrap,footer { padding-left:20px; padding-right:20px; } .hero { padding:28px 20px; } .tf-options { flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="course-map.html">Course map</a>
+  <span class="sep">/</span>
+  <span>SF Certified AI Ops Practitioner — Certification Test</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Module 1 · Certification test</div>
+    <h1>SF Certified <span>AI Ops Practitioner</span><br>using Claude Code</h1>
+    <p class="hero-sub">45 questions covering all 13 examples and both diagrams from Module 1. A score of 75% or above earns the SF Certified AI Ops Practitioner using Claude Code credential.</p>
+    <div class="hero-meta">
+      <span class="meta-pill pill-blue">45 questions</span>
+      <span class="meta-pill pill-grey">MCQ and True / False</span>
+      <span class="meta-pill pill-grey">No time limit</span>
+      <span class="meta-pill pill-green">Pass mark: 75%</span>
+    </div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap" id="progressWrap" style="display:none;">
+  <div class="progress-inner">
+    <span class="progress-label">Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <span class="progress-count" id="progressCount">0 / 45</span>
+  </div>
+</div>
+
+<div class="main" id="mainContent">
+
+  <div class="saved-banner" id="savedBanner">
+    <span>💾</span>
+    <span>Your previous answers have been restored. Continue where you left off.</span>
+  </div>
+
+  <div class="results" id="resultsPanel">
+    <div class="results-badge" id="resultsBadge"></div>
+    <div class="results-title" id="resultsTitle"></div>
+    <div class="results-score" id="resultsScore"></div>
+    <div class="results-breakdown" id="resultsBreakdown"></div>
+  </div>
+
+  <div id="questionsContainer">
+    <p style="color:var(--text-dimmer);font-size:13px;font-family:'Source Code Pro',monospace;">Loading questions…</p>
+  </div>
+
+</div>
+
+<div class="submit-bar">
+  <div class="submit-inner">
+    <span class="submit-status" id="submitStatus">Answer all questions to submit</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="reset-btn" id="resetBtn" onclick="resetTest()">Start over</button>
+      <button class="submit-btn" id="submitBtn" onclick="submitTest()" disabled>Submit test</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>AIOps &amp; DevOps Learning Path · SourceFuse L&amp;D</span>
+  <span>SF Certified AI Ops Practitioner using Claude Code</span>
+</footer>
+
+<script>
+const STORAGE_KEY = 'sf_aiops_test_v1';
+const PASS_MARK = 0.75;
+
+let questions = [];
+let answers = {};   // { questionId: selectedValue }
+let submitted = false;
+
+// ── Source display names ─────────────────────────────────────────────────────
+const SOURCE_LABELS = {
+  'diagram-1': { label: 'Diagram 1 — Participation model', icon: '📊' },
+  'diagram-2': { label: 'Diagram 2 — Pipeline integration model', icon: '🔄' },
+  'example-1':  { label: 'Example 1 — Dockerfile', icon: '🐳' },
+  'example-2':  { label: 'Example 2 — Terraform variables.tf', icon: '🏗️' },
+  'example-3':  { label: 'Example 3 — GitHub Actions pipeline', icon: '⚙️' },
+  'example-4':  { label: 'Example 4 — Shell script', icon: '🖥️' },
+  'example-5':  { label: 'Example 5 — CI/CD with security scanning', icon: '🔒' },
+  'example-6':  { label: 'Example 6 — Multi-environment Terraform', icon: '🌍' },
+  'example-7':  { label: 'Example 7 — Kubernetes HPA and PDB', icon: '☸️' },
+  'example-8':  { label: 'Example 8 — Argo CD promotion flow', icon: '🚀' },
+  'example-9':  { label: 'Example 9 — Python automation with retry logic', icon: '🐍' },
+  'example-10': { label: 'Example 10 — Cross-layer RCA', icon: '🔍' },
+  'example-11': { label: 'Example 11 — CI pipeline performance triage', icon: '📈' },
+  'example-12': { label: 'Example 12 — Incident RCA with AIOps handoff', icon: '🚨' },
+  'example-13': { label: 'Example 13 — Alert enrichment and runbook generation', icon: '📋' },
+};
+
+// ── Load questions ────────────────────────────────────────────────────────────
+async function loadQuestions() {
+  try {
+    const res = await fetch('test-bank.json');
+    const data = await res.json();
+    questions = data.questions;
+    restoreOrRender();
+  } catch (e) {
+    document.getElementById('questionsContainer').innerHTML =
+      '<p style="color:var(--coral);font-size:13px;">Could not load test-bank.json. Make sure it is in the same directory as this page.</p>';
+  }
+}
+
+// ── Restore saved state ───────────────────────────────────────────────────────
+function restoreOrRender() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const state = JSON.parse(saved);
+      answers = state.answers || {};
+      submitted = state.submitted || false;
+      if (Object.keys(answers).length > 0) {
+        document.getElementById('savedBanner').classList.add('visible');
+      }
+    } catch(e) { /* ignore corrupt state */ }
+  }
+  renderQuestions();
+  if (submitted) showResults(false);
+}
+
+// ── Save state ────────────────────────────────────────────────────────────────
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, submitted }));
+}
+
+// ── Group questions by source ─────────────────────────────────────────────────
+function groupBySource(qs) {
+  const groups = {};
+  const order = [];
+  qs.forEach(q => {
+    if (!groups[q.source]) { groups[q.source] = []; order.push(q.source); }
+    groups[q.source].push(q);
+  });
+  return { groups, order };
+}
+
+// ── Render all questions ──────────────────────────────────────────────────────
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  const { groups, order } = groupBySource(questions);
+  let html = '';
+  let globalNum = 0;
+
+  order.forEach(source => {
+    const meta = SOURCE_LABELS[source] || { label: source, icon: '📝' };
+    html += `
+      <div class="section-header">
+        <div class="section-icon">${meta.icon}</div>
+        <div>
+          <div class="section-title">${meta.label}</div>
+          <div class="section-sub">${groups[source].length} question${groups[source].length > 1 ? 's' : ''}</div>
+        </div>
+      </div>`;
+
+    groups[source].forEach(q => {
+      globalNum++;
+      const ans = answers[q.id];
+      const isAnswered = ans !== undefined;
+      const isCorrect = submitted ? checkCorrect(q, ans) : null;
+      const cardClass = submitted
+        ? (isCorrect ? 'correct' : 'wrong')
+        : (isAnswered ? 'answered' : '');
+
+      html += `<div class="q-card ${cardClass}" id="card-${q.id}">
+        <div class="q-num">Q${globalNum} · ${q.type === 'mcq' ? 'Multiple choice' : 'True / False'}</div>
+        <div class="q-text">${q.question}</div>`;
+
+      if (q.type === 'mcq') {
+        html += `<div class="options">`;
+        Object.entries(q.options).forEach(([key, text]) => {
+          const isSelected = ans === key;
+          let cls = '';
+          if (submitted) {
+            if (key === q.correct) cls = 'correct-ans';
+            else if (isSelected && key !== q.correct) cls = 'wrong-ans';
+          } else if (isSelected) cls = 'selected';
+          html += `<div class="option ${cls}" onclick="selectMcq('${q.id}','${key}',this)" data-key="${key}">
+            <span class="option-key">${key}</span><span>${text}</span>
+          </div>`;
+        });
+        html += `</div>`;
+      } else {
+        const trueClass = submitted
+          ? (q.correct === true ? 'correct-ans' : (ans === true && q.correct !== true ? 'wrong-ans' : ''))
+          : (ans === true ? 'selected' : '');
+        const falseClass = submitted
+          ? (q.correct === false ? 'correct-ans' : (ans === false && q.correct !== false ? 'wrong-ans' : ''))
+          : (ans === false ? 'selected' : '');
+        html += `<div class="tf-options">
+          <div class="tf-btn ${trueClass}" onclick="selectTF('${q.id}',true,this)">True</div>
+          <div class="tf-btn ${falseClass}" onclick="selectTF('${q.id}',false,this)">False</div>
+        </div>`;
+      }
+
+      if (submitted) {
+        const expClass = isCorrect ? 'correct-exp' : 'wrong-exp';
+        const expLabel = isCorrect ? '✓ Correct' : '✗ Incorrect';
+        html += `<div class="explanation ${expClass} visible">
+          <div class="exp-label">${expLabel}</div>
+          ${q.explanation}
+        </div>`;
+      }
+
+      html += `</div>`;
+    });
+  });
+
+  container.innerHTML = html;
+  document.getElementById('progressWrap').style.display = 'block';
+  updateProgress();
+  updateSubmitBar();
+  if (submitted) document.getElementById('resetBtn').style.display = 'block';
+}
+
+// ── Answer handlers ───────────────────────────────────────────────────────────
+function selectMcq(id, key, el) {
+  if (submitted) return;
+  answers[id] = key;
+  // Update UI within card only
+  const card = document.getElementById('card-' + id);
+  card.querySelectorAll('.option').forEach(opt => {
+    opt.classList.toggle('selected', opt.dataset.key === key);
+    opt.querySelector('.option-key').style.color = opt.classList.contains('selected') ? 'var(--blue)' : '';
+  });
+  card.classList.add('answered');
+  saveState();
+  updateProgress();
+  updateSubmitBar();
+}
+
+function selectTF(id, val, el) {
+  if (submitted) return;
+  answers[id] = val;
+  const card = document.getElementById('card-' + id);
+  card.querySelectorAll('.tf-btn').forEach(btn => {
+    const btnVal = btn.textContent === 'True';
+    btn.classList.toggle('selected', btnVal === val);
+  });
+  card.classList.add('answered');
+  saveState();
+  updateProgress();
+  updateSubmitBar();
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const total = questions.length;
+  const done = Object.keys(answers).length;
+  const pct = total > 0 ? (done / total * 100).toFixed(0) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${done} / ${total}`;
+}
+
+function updateSubmitBar() {
+  const total = questions.length;
+  const done = Object.keys(answers).length;
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('submitStatus');
+  if (submitted) {
+    status.textContent = 'Test submitted';
+    btn.disabled = true;
+    return;
+  }
+  const remaining = total - done;
+  if (remaining === 0) {
+    btn.disabled = false;
+    status.textContent = 'All questions answered — ready to submit';
+  } else {
+    btn.disabled = true;
+    status.textContent = `${remaining} question${remaining > 1 ? 's' : ''} remaining`;
+  }
+}
+
+// ── Check answer ──────────────────────────────────────────────────────────────
+function checkCorrect(q, ans) {
+  if (ans === undefined) return false;
+  if (q.type === 'mcq') return ans === q.correct;
+  return ans === q.correct; // boolean comparison
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+function submitTest() {
+  if (submitted) return;
+  submitted = true;
+  saveState();
+  renderQuestions();
+  showResults(true);
+  document.getElementById('resetBtn').style.display = 'block';
+  document.getElementById('savedBanner').classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showResults(scroll) {
+  const total = questions.length;
+  let correct = 0, wrong = 0, skipped = 0;
+  questions.forEach(q => {
+    const ans = answers[q.id];
+    if (ans === undefined) { skipped++; return; }
+    if (checkCorrect(q, ans)) correct++; else wrong++;
+  });
+  const pct = correct / total;
+  const pass = pct >= PASS_MARK;
+  const pctDisplay = Math.round(pct * 100);
+
+  const panel = document.getElementById('resultsPanel');
+  panel.classList.add('visible');
+  panel.classList.toggle('pass', pass);
+
+  document.getElementById('resultsBadge').innerHTML = pass ? '🏆' : '📝';
+  document.getElementById('resultsBadge').className = 'results-badge ' + (pass ? 'pass' : 'fail');
+
+  document.getElementById('resultsTitle').textContent = pass
+    ? 'Congratulations — you passed!'
+    : 'Not quite — review and try again';
+  document.getElementById('resultsTitle').className = 'results-title ' + (pass ? 'pass' : 'fail');
+
+  document.getElementById('resultsScore').innerHTML =
+    `You scored <strong>${pctDisplay}%</strong> (${correct} of ${total} correct) · Pass mark: ${Math.round(PASS_MARK * 100)}%`;
+
+  document.getElementById('resultsBreakdown').innerHTML = `
+    <div class="result-stat"><div class="result-stat-num correct">${correct}</div><div class="result-stat-label">Correct</div></div>
+    <div class="result-stat"><div class="result-stat-num wrong">${wrong}</div><div class="result-stat-label">Incorrect</div></div>
+    <div class="result-stat"><div class="result-stat-num skipped">${skipped}</div><div class="result-stat-label">Unanswered</div></div>
+  `;
+
+  document.getElementById('submitBtn').textContent = pass ? '✓ Passed' : '✗ Did not pass';
+  document.getElementById('submitBtn').disabled = true;
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+function resetTest() {
+  if (!confirm('Start over? Your current answers will be cleared.')) return;
+  answers = {};
+  submitted = false;
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('resultsPanel').classList.remove('visible');
+  document.getElementById('savedBanner').classList.remove('visible');
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('submitBtn').textContent = 'Submit test';
+  renderQuestions();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+loadQuestions();
+</script>
+</body>
+</html>
