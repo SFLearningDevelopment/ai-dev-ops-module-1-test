@@ -201,8 +201,15 @@
 </footer>
 
 <script>
-const STORAGE_KEY = 'sf_aiops_test_v1';
-const PASS_MARK = 0.75;
+// ── Config ────────────────────────────────────────────────────────────────────
+// Update BANK_URL to match your certification test repo on GitHub Pages.
+// Bump BANK_VERSION whenever test-bank.json changes — this busts the browser
+// cache AND invalidates any saved localStorage session so learners are never
+// tested against stale questions.
+const BANK_URL     = 'https://sflearningdevelopment.github.io/ai-dev-ops-module-1-test/test-bank.json';
+const BANK_VERSION = '2026-03-15-v1';
+const STORAGE_KEY  = `sf_aiops_test_${BANK_VERSION}`;
+const PASS_MARK    = 0.75;
 
 let questions = [];
 let answers = {};   // { questionId: selectedValue }
@@ -230,13 +237,15 @@ const SOURCE_LABELS = {
 // ── Load questions ────────────────────────────────────────────────────────────
 async function loadQuestions() {
   try {
-    const res = await fetch('test-bank.json');
+    // ?v= cache-busting param ensures the browser fetches fresh JSON when
+    // BANK_VERSION is bumped, even if the browser has cached the old file.
+    const res = await fetch(`${BANK_URL}?v=${BANK_VERSION}`);
     const data = await res.json();
     questions = data.questions;
     restoreOrRender();
   } catch (e) {
     document.getElementById('questionsContainer').innerHTML =
-      '<p style="color:var(--coral);font-size:13px;">Could not load test-bank.json. Make sure it is in the same directory as this page.</p>';
+      `<p style="color:var(--coral);font-size:13px;">Could not load test questions from ${BANK_URL}. Check the repo name and that test-bank.json is published.</p>`;
   }
 }
 
